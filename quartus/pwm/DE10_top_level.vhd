@@ -390,7 +390,7 @@ architecture DE10Nano_arch of DE10_Top_Level is
     );
 	 
 
-	--led <= std_ulogic_vector(led_intermediate);
+	--led <= std_ulogic_vector(intermediate);
 	--sw <= std_ulogic_vector(sw_intermediate);
 	
 end architecture DE10Nano_arch;

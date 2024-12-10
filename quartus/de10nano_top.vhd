@@ -248,6 +248,9 @@ architecture de10nano_arch of de10nano_top is
       memory_oct_rzqin                : in    std_logic;
       clk_clk                         : in    std_logic;
       reset_reset_n                   : in    std_logic;
+		pwm_controller_blue_output      : out	 std_logic;
+      pwm_controller_red_output       : out 	 std_logic;
+      pwm_controller_green_output     : out 	 std_logic;
       adc_sclk                        : out   std_logic;
       adc_cs_n                        : out   std_logic;
       adc_dout                        : in    std_logic;
@@ -342,6 +345,11 @@ begin
       memory_mem_odt     => hps_ddr3_odt,
       memory_mem_dm      => hps_ddr3_dm,
       memory_oct_rzqin   => hps_ddr3_rzq,
+		
+		--PWM Controller
+		pwm_controller_blue_output      => gpio_1(35),
+      pwm_controller_red_output       => gpio_1(33),
+      pwm_controller_green_output     => gpio_1(31),
 
       -- LTC2308 ADC
       adc_sclk => adc_sck,

@@ -3,7 +3,7 @@
 /{
     de10nano_adc: de10nano_adc@ff328c50 {
     compatible = "adsd,de10nano_adc";
-    reg = <0xff200000 16>;
+    reg = <0xff200000 32>;
     };
 
     pwm: pwm@ff328c50 {

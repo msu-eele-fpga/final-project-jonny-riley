@@ -16,9 +16,10 @@
 /**
 * struct pwm_dev - Private led patterns device struct.
 * @base_addr: Pointer to the component's base address
-* @hps_led_control: Address of the hps_led_control register
-* @base_period: Address of the base_period register
-* @led_reg: Address of the led_reg register
+* @period: Address of the pwm period register
+* @blue_duty_cycle: Address of the blue_duty_cycle register
+* @red_duty_cycle: Address of the red_duty_cycle register
+* @green_duty_cycle: Address of the green_duty_cycle register
 * @miscdev: miscdevice used to create a character device
 * @lock: mutex used to prevent concurrent writes to memory
 * An pwm_dev struct gets created for each led patterns component.
@@ -37,7 +38,7 @@ struct pwm_dev {
 
 
 /**
-* led_reg_show() - Return the led_reg value to user-space via sysfs.
+* period_show() - Return the period value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
@@ -62,14 +63,14 @@ static ssize_t period_show(struct device *dev,
 
 
 /**
-* led_reg_store() - Store the led_reg value.
+* period_store() - Store the period value.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
 *
 device struct.
 * @attr: Unused.
-* @buf: Buffer that contains the led_reg value being written.
+* @buf: Buffer that contains the period value being written.
 * @size: The number of bytes being written.
 *
 * Return: The number of bytes stored.
@@ -97,7 +98,7 @@ static ssize_t period_store(struct device *dev,
 
 
 /**
-* base_period_show() - Return the base_period value to user-space via sysfs.
+* blue_duty_cycle_show() - Return the blue_duty_cycle value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
@@ -121,14 +122,14 @@ static ssize_t blue_duty_cycle_show(struct device *dev,
 }
 
 /**
-* base_period_store() - Store the base_period value.
+* blue_duty_cycle_store() - Store the blue_duty_cycle value.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
 *
 device struct.
 * @attr: Unused.
-* @buf: Buffer that contains the base_period value being written.
+* @buf: Buffer that contains the blue_duty_cycle value being written.
 * @size: The number of bytes being written.
 *
 * Return: The number of bytes stored.
@@ -140,8 +141,6 @@ static ssize_t blue_duty_cycle_store(struct device *dev,
     int ret;
     struct pwm_dev *priv = dev_get_drvdata(dev);
 
-    // Parse the string we received as a u32
-    // See https://elixir.bootlin.com/linux/latest/source/lib/kstrtox.c#L289
     ret = kstrtou32(buf, 0, &blue_duty_cycle);
     if (ret < 0) {
     // kstrtou32 returned an error
@@ -159,7 +158,7 @@ static ssize_t blue_duty_cycle_store(struct device *dev,
 
 
 /**
-* base_period_show() - Return the base_period value to user-space via sysfs.
+* red_duty_cycle_show() - Return the red_duty_cycle value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
@@ -183,14 +182,14 @@ static ssize_t red_duty_cycle_show(struct device *dev,
 }
 
 /**
-* base_period_store() - Store the base_period value.
+* red_duty_cycle_store() - Store the red_duty_cycle value.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
 *
 device struct.
 * @attr: Unused.
-* @buf: Buffer that contains the base_period value being written.
+* @buf: Buffer that contains the red_duty_cycle value being written.
 * @size: The number of bytes being written.
 *
 * Return: The number of bytes stored.
@@ -202,8 +201,6 @@ static ssize_t red_duty_cycle_store(struct device *dev,
     int ret;
     struct pwm_dev *priv = dev_get_drvdata(dev);
 
-    // Parse the string we received as a u32
-    // See https://elixir.bootlin.com/linux/latest/source/lib/kstrtox.c#L289
     ret = kstrtou32(buf, 0, &red_duty_cycle);
     if (ret < 0) {
     // kstrtou32 returned an error
@@ -218,7 +215,7 @@ static ssize_t red_duty_cycle_store(struct device *dev,
 }
 
 /**
-* base_period_show() - Return the base_period value to user-space via sysfs.
+* green_duty_cycle_show() - Return the green_duty_cycle value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
@@ -242,14 +239,14 @@ static ssize_t green_duty_cycle_show(struct device *dev,
 }
 
 /**
-* base_period_store() - Store the base_period value.
+* green_duty_cycle_store() - Store the green_duty_cycle value.
 * @dev: Device structure for the pwm component. This
 *
 device struct is embedded in the pwm' platform
 *
 device struct.
 * @attr: Unused.
-* @buf: Buffer that contains the base_period value being written.
+* @buf: Buffer that contains the green_duty_cycle value being written.
 * @size: The number of bytes being written.
 *
 * Return: The number of bytes stored.
@@ -261,8 +258,6 @@ static ssize_t green_duty_cycle_store(struct device *dev,
     int ret;
     struct pwm_dev *priv = dev_get_drvdata(dev);
 
-    // Parse the string we received as a u32
-    // See https://elixir.bootlin.com/linux/latest/source/lib/kstrtox.c#L289
     ret = kstrtou32(buf, 0, &green_duty_cycle);
     if (ret < 0) {
     // kstrtou32 returned an error
@@ -275,9 +270,6 @@ static ssize_t green_duty_cycle_store(struct device *dev,
     return size;
 
 }
-
-
-
 
 
 // Define sysfs attributes
@@ -296,7 +288,6 @@ static struct attribute *pwm_attrs[] = {
     NULL,
 };
 ATTRIBUTE_GROUPS(pwm);
-
 
 
 /**
@@ -469,10 +460,6 @@ static int pwm_probe(struct platform_device *pdev)
     priv->red_duty_cycle = priv->base_addr + RED_DUTY_CYCLE_OFFSET;
     priv->green_duty_cycle = priv->base_addr + GREEN_DUTY_CYCLE_OFFSET;
 
-    // Enable software-control mode and turn all the LEDs on, just for fun.
-    //iowrite32(1, priv->hps_led_control);
-    //iowrite32(0xff, priv->led_reg);
-
     // Initialize the misc device parameters
     priv->miscdev.minor = MISC_DYNAMIC_MINOR;
     priv->miscdev.name = "pwm";
@@ -504,9 +491,6 @@ static int pwm_remove(struct platform_device *pdev)
 {
     // Get the led patterns's private data from the platform device.
     struct pwm_dev *priv = platform_get_drvdata(pdev);
-    
-    // Disable software-control mode, just for kicks.
-    //iowrite32(0, priv->hps_led_control);
 
     // Deregister the misc device and remove the /dev/pwm file.
     misc_deregister(&priv->miscdev);
@@ -516,12 +500,6 @@ static int pwm_remove(struct platform_device *pdev)
     return 0;
 }
 
-/*
-* Define the compatible property used for matching devices to this driver,
-* then add our device id structure to the kernel's device table. For a device
-* to be matched with this driver, its device tree node must use the same
-* compatible string as defined here.
-*/
 static const struct of_device_id pwm_of_match[] = {
     { .compatible = "adsd,pwm", },
     { }
@@ -549,10 +527,6 @@ static struct platform_driver pwm_driver = {
     },
 };
 
-/*
-* We don't need to do anything special in module init/exit.
-* This macro automatically handles module init/exit.
-*/
 module_platform_driver(pwm_driver);
 
 MODULE_LICENSE("Dual MIT/GPL");

@@ -10,7 +10,8 @@ entity timer is
       rst       : in std_logic;
       pb        : in std_logic;
       start     : in std_logic;
-      time_out  : out integer
+      time_out  : out unsigned(19 downto 0);
+      LED       : out std_logic
     );
 end entity;
 
@@ -23,8 +24,10 @@ architecture timer_arch of timer is
     
     signal pb_sync : std_logic;
 
-    signal count : integer := 0;
+    signal count : unsigned(19 downto 0) := "00000000000000000000";
     signal delay_counter : integer := 0;
+
+    
 
     component async_conditioner is
         port (
@@ -58,13 +61,16 @@ architecture timer_arch of timer is
                     if start = '1' then
                         state <= delay;
                     else
+                        LED <= '0';
                         state <= idle;
                     end if;
                 when delay =>
                     if delay_counter >= 100 then --100000000
                         state <= timer;
-                        count <= 0;
+                        count <= "00000000000000000000";
+                        LED <= '0';
                     else
+                        LED <= '1';
                         state <= delay;
                         delay_counter <= delay_counter + 1;
                     end if;

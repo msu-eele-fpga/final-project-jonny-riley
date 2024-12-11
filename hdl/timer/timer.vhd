@@ -19,7 +19,7 @@ architecture timer_arch of timer is
     type state_type is (idle, delay, timer);
     signal state : state_type;
 
-    signal delay_over : std_logic := '0';
+    
     
     signal pb_sync : std_logic;
 
@@ -63,7 +63,8 @@ architecture timer_arch of timer is
                 when delay =>
                     if delay_counter >= 100 then --100000000
                         state <= timer;
-                    else   
+                        count <= 0;
+                    else
                         state <= delay;
                         delay_counter <= delay_counter + 1;
                     end if;

@@ -49,7 +49,20 @@ architecture testbench of timer_tb is
         wait for 2000 * 20 ns;
 
         pb_tb <= '1';
-        wait;
+        wait for 20 ns;
+        pb_tb <= '0';
+
+        wait for 100 ns;
+
+        start_tb <= '1';
+        wait for 20 ns;
+        start_tb <= '0';
+
+        wait for 2000 * 20 ns;
+
+        pb_tb <= '1';
+        wait for 20 ns;
+        pb_tb <= '0';
 
     end process;
 

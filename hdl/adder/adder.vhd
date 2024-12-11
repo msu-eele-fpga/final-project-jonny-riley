@@ -9,7 +9,7 @@ entity adder is
         clk             : in std_ulogic; -- system clock
         rst             : in std_ulogic; -- system reset (assume active high, change at top level if needed)
         push_button     : in std_ulogic; -- Pushbutton to change state (assume active high, change at top level if needed)
-        amount          : in std_ulogic_vector(3 downto 0); -- Amount the binary will add by on each button press
+        amount          : in unsigned(7 downto 0); -- Amount the binary will add by on each button press
         led             : out std_ulogic_vector(7 downto 0) -- LEDs on the DE10-Nano board
     );
 end entity adder;
@@ -26,7 +26,7 @@ architecture adder_arch of adder is
 
     signal sync_button  : std_ulogic;
 
-    signal count : std_logic_vector(7 downto 0);
+    signal count : unsigned(7 downto 0) := "00000000";
 
     begin
 
@@ -37,33 +37,29 @@ architecture adder_arch of adder is
             async => push_button,
             sync => sync_button);
 
-            state_logic : process(clk, rst, sync_button)
-                begin
-                    if rst = '1' then
-                        count <= "00000000";
-                    elsif rising_edge(clk) then
-                        if sync_button = '1' then
-                            count <= count + amount;
-                        end if;
-
-                    end if;
-            end process state_logic;
-
-            
-            output_logic : process(clk)
-
-                begin
-                    if rst = '1' then
-                        led <= "00000000";
-                    elsif rising_edge(clk) then
-                        led <= count;
+        state_logic : process(clk, rst, sync_button)
+            begin
+                if rst = '1' then
+                    count <= "00000000";
+                elsif rising_edge(clk) then
+                    if sync_button = '1' then
+                        count <= count + amount;
                     end if;
 
-            end process output_logic;
+                end if;
+        end process state_logic;
 
+        
+        output_logic : process(clk)
 
-            
+            begin
+                if rst = '1' then
+                    led <= "00000000";
+                elsif rising_edge(clk) then
+                    led <= std_ulogic_vector(count);
+                end if;
 
+        end process output_logic;
 
     end architecture;
 

@@ -28,8 +28,7 @@ int main () {
 		amount_ret = fseek(adder_file, AMOUNT_OFFSET, SEEK_SET);
 		amount_ret = fread(&val, 4, 1, adder_file);
         printf("Amount added by: ");
-        printf(amount_ret);
-        printf("\n");
+        printf("0x%x\n", val);
 
 
         sleep(3);
@@ -38,7 +37,6 @@ int main () {
         val = 0xA;
 		amount_ret = fseek(adder_file, AMOUNT_OFFSET, SEEK_SET);
 		amount_ret = fwrite(&val, 4, 1, adder_file);
-		fflush(adder_file);
 
         sleep(3);
 

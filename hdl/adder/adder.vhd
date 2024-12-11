@@ -9,7 +9,7 @@ entity adder is
         clk             : in std_ulogic; -- system clock
         rst             : in std_ulogic; -- system reset (assume active high, change at top level if needed)
         push_button     : in std_ulogic; -- Pushbutton to change state (assume active high, change at top level if needed)
-        amount          : in std_logic_vector(3 downto 0) -- Amount the binary will add by on each button press
+        amount          : in std_ulogic_vector(3 downto 0); -- Amount the binary will add by on each button press
         led             : out std_ulogic_vector(7 downto 0) -- LEDs on the DE10-Nano board
     );
 end entity adder;
@@ -42,7 +42,7 @@ architecture adder_arch of adder is
                     if rst = '1' then
                         count <= "00000000";
                     elsif rising_edge(clk) then
-                        if sync_button = "1" then
+                        if sync_button = '1' then
                             count <= count + amount;
                         end if;
 

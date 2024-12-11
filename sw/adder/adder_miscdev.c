@@ -32,10 +32,24 @@ int main () {
         printf("\n");
 
 
+        sleep(3);
+
         printf("New amount is 10\n");
+        val = 0xA;
 		amount_ret = fseek(adder_file, AMOUNT_OFFSET, SEEK_SET);
 		amount_ret = fwrite(&val, 4, 1, adder_file);
 		fflush(adder_file);
+
+        sleep(3);
+
+
+        printf("New amount is 5\n");
+        val = 0x5;
+		amount_ret = fseek(adder_file, AMOUNT_OFFSET, SEEK_SET);
+		amount_ret = fwrite(&val, 4, 1, adder_file);
+		fflush(adder_file);
+
+        sleep(3);
 	}
 
 	fclose(adder_file);

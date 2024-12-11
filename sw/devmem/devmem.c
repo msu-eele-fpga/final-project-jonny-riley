@@ -23,7 +23,6 @@ if(argc == 1){
 	return 1;
 }
 
-
 bool  is_write = (argc == 3) ? true : false;
 
 const uint32_t ADDRESS = strtoul(argv[1], NULL, 0);
@@ -69,10 +68,4 @@ else{
 }
 
 return 0;
-
-
-
 }
-
-
-

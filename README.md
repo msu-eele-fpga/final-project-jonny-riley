@@ -29,6 +29,5 @@ of timer can also be found in this repo usually labeled timer.
 
 Jonny has created a binary adder that outputs a binary addtion onto 7 leds on the De10 Nano. 
 The component can be found under `/hdl/adder`. Other resources to support the development
-of adder can also be found in this repo usually labeled timer.
+of adder can also be found in this repo usually labeled adder.
 
-The given organization of the final project repository is a suggestion.  You are free to change it to meet your needs.  However, you will need to update this readme with a discription of how your final project is organized, what the folders contain, and where your source code is located.

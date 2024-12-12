@@ -449,8 +449,6 @@ static int pwm_probe(struct platform_device *pdev)
 }
 
 
-
-
 static int pwm_remove(struct platform_device *pdev)
 {
     // Get the led patterns's private data from the platform device.
@@ -469,7 +467,6 @@ static const struct of_device_id pwm_of_match[] = {
     { }
 };
 MODULE_DEVICE_TABLE(of, pwm_of_match);
-
 
 
 /*

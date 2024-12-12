@@ -49,11 +49,8 @@ architecture pwm_avalon_arch of pwm_avalon is
 
         signal green_duty_cycle  : std_logic_vector(18 - 1 downto 0) := (others => '0');
 
-
-
     begin
-
-
+        -- Instantiate three PWM components for each pin of the RGB LED
         blue_pwm : component pwm_controller
         port map (
             clk => clk,
@@ -81,6 +78,7 @@ architecture pwm_avalon_arch of pwm_avalon is
             output => green_output
         );
 
+        -- Setup 4 registers to controll the RGB LED
         avalon_register_read : process(clk)
         begin
             if rising_edge(clk) and avs_read = '1' then

@@ -35,9 +35,6 @@ struct adder_dev {
     struct mutex lock;
 };
 
-
-
-
 /**
 * period_show() - Return the period value to user-space via sysfs.
 * @dev: Device structure for the adder component. This
@@ -52,12 +49,9 @@ static ssize_t amount_show(struct device *dev,
 {
     u32 amount;
     struct adder_dev *priv = dev_get_drvdata(dev);
-
     amount = ioread32(priv->amount);
-
     return scnprintf(buf, PAGE_SIZE, "%u\n", amount);
 }
-
 
 /**
 * period_store() - Store the period value.
@@ -76,8 +70,6 @@ static ssize_t amount_store(struct device *dev,
     int ret;
     struct adder_dev *priv = dev_get_drvdata(dev);
 
-    // Parse the string we received as a u32
-    // See https://elixir.bootlin.com/linux/latest/source/lib/kstrtox.c#L289
     ret = kstrtou32(buf, 0, &amount);
     if (ret < 0) {
         return ret;
@@ -100,7 +92,6 @@ static struct attribute *adder_attrs[] = {
     NULL,
 };
 ATTRIBUTE_GROUPS(adder);
-
 
 /**
 * adder_read() - Read method for the adder char device
@@ -211,8 +202,6 @@ static ssize_t adder_write(struct file *file, const char __user *buf,
 }
 
 
-
-
 /**
 * adder_fops - File operations supported by the
 *
@@ -241,7 +230,6 @@ static int adder_probe(struct platform_device *pdev)
 
     size_t ret;
 
-
     /*
     * Allocate kernel memory for the led patterns device and set it to 0.
     * GFP_KERNEL specifies that we are allocating normal kernel RAM;
@@ -269,7 +257,6 @@ static int adder_probe(struct platform_device *pdev)
     // Set the memory addresses for each register.
     priv->amount = priv->base_addr + AMOUNT_OFFSET;
 
-
     // Initialize the misc device parameters
     priv->miscdev.minor = MISC_DYNAMIC_MINOR;
     priv->miscdev.name = "adder";
@@ -295,8 +282,6 @@ static int adder_probe(struct platform_device *pdev)
 }
 
 
-
-
 static int adder_remove(struct platform_device *pdev)
 {
     // Get the led patterns's private data from the platform device.
@@ -315,7 +300,6 @@ static const struct of_device_id adder_of_match[] = {
     { }
 };
 MODULE_DEVICE_TABLE(of, adder_of_match);
-
 
 
 /*

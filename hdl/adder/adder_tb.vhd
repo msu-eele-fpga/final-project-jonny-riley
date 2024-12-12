@@ -13,23 +13,24 @@ architecture testbench of adder_tb is
 
   component adder is
     port(
-        clk             : in std_ulogic; -- system clock
-        rst             : in std_ulogic; -- system reset (assume active high, change at top level if needed)
-        push_button     : in std_ulogic; -- Pushbutton to change state (assume active high, change at top level if needed)
-        amount          : in unsigned(7 downto 0); -- Amount the binary will add by on each button press
-        led             : out std_ulogic_vector(7 downto 0) -- LEDs on the DE10-Nano board
+        clk             : in std_ulogic;
+        rst             : in std_ulogic; 
+        push_button     : in std_ulogic; 
+        amount          : in unsigned(7 downto 0); 
+        led             : out std_ulogic_vector(7 downto 0) 
     );
 end component;
 
+  -- Testbench singal declerations
   signal clk_tb                 : std_ulogic := '0';
   signal rst_tb                 : std_ulogic := '0';
   signal push_button_tb         : std_ulogic := '0';
   signal amount_tb              : unsigned(7 downto 0) := "00000001";
   signal led_tb                 : std_ulogic_vector(7 downto 0) := (others => '0');
 
-
 begin
 
+  -- instantiate the adder component
   dut : component adder
     port map (
       clk   => clk_tb,
@@ -47,7 +48,7 @@ begin
 
   end process clk_gen;
 
-  -- Create the asynchronous signal
+  -- Create the simulated pushbutton signal and watch LEDs
   async_stim : process is
   begin
     rst_tb <= '1';

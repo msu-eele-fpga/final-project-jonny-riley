@@ -25,11 +25,11 @@ architecture adder_avalon_arch of adder_avalon is
 
     component adder is
         port(
-            clk             : in std_ulogic; -- system clock
-            rst             : in std_ulogic; -- system reset (assume active high, change at top level if needed)
-            push_button     : in std_ulogic; -- Pushbutton to change state (assume active high, change at top level if needed)
-            amount          : in unsigned(7 downto 0); -- Amount the binary will add by on each button press
-            led             : out std_ulogic_vector(6 downto 0) -- LEDs on the DE10-Nano board
+            clk             : in std_ulogic; 
+            rst             : in std_ulogic; 
+            push_button     : in std_ulogic; 
+            amount          : in unsigned(7 downto 0);
+            led             : out std_ulogic_vector(6 downto 0) 
         );
     end component adder;
 
@@ -46,6 +46,7 @@ architecture adder_avalon_arch of adder_avalon is
 			led => led
 		);
 
+        -- Only setup for R/W register which is the amount we add by
         avalon_register_read : process(clk)
         begin
             if rising_edge(clk) and avs_read = '1' then

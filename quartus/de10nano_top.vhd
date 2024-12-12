@@ -1,6 +1,12 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2024 Ross K. Snider, Trevor Vannoy.  All rights reserved.
 
+-----------------------------
+-- de10nano_top.vhd, EELE467 final
+-- Riley Holmes, Jonny Hughes
+-- 12/11/24
+-----------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -248,14 +254,23 @@ architecture de10nano_arch of de10nano_top is
       memory_oct_rzqin                : in    std_logic;
       clk_clk                         : in    std_logic;
       reset_reset_n                   : in    std_logic;
+		pwm_controller_blue_output      : out	 std_logic;
+      pwm_controller_red_output       : out 	 std_logic;
+      pwm_controller_green_output     : out 	 std_logic;
       adc_sclk                        : out   std_logic;
       adc_cs_n                        : out   std_logic;
       adc_dout                        : in    std_logic;
-      adc_din                         : out   std_logic
+      adc_din                         : out   std_logic;
+      timer_push_button               : in    std_logic                     := 'X';             -- push_button
+      timer_led                       : out   std_logic;                                        -- led
+      adder_led                       : out   std_logic_vector(6 downto 0);                      -- led
+      adder_push_button               : in    std_logic                     := 'X'             -- push_button
     );
   end component soc_system;
 
   signal rst_n : std_ulogic;
+
+  signal temp_led : std_logic_vector(6 downto 0);
 
 begin
 
@@ -342,6 +357,11 @@ begin
       memory_mem_odt     => hps_ddr3_odt,
       memory_mem_dm      => hps_ddr3_dm,
       memory_oct_rzqin   => hps_ddr3_rzq,
+		
+		--PWM Controller
+		pwm_controller_blue_output      => gpio_1(35),
+      pwm_controller_red_output       => gpio_1(33),
+      pwm_controller_green_output     => gpio_1(31),
 
       -- LTC2308 ADC
       adc_sclk => adc_sck,
@@ -351,7 +371,14 @@ begin
 
       -- Fabric clock and reset
       clk_clk       => fpga_clk1_50,
-      reset_reset_n => rst_n
+      reset_reset_n => rst_n,
+
+      timer_push_button               => push_button_n(1),               --          timer.push_button
+      timer_led                       => led(7),                       --               .led
+      adder_led                       => temp_led,                        --          adder.led
+      adder_push_button               => push_button_n(1)   
     );
+
+    led(6 downto 0) <= std_ulogic_vector(temp_led);
 
 end architecture de10nano_arch;

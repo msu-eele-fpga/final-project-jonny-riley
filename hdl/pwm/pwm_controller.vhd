@@ -62,11 +62,6 @@ architecture pwm_controller_arch of pwm_controller is
     -- type cast of logic vector to unsiged
     signal duty_cycle_scaled : unsigned(17 downto 0);
 
-
-
-
-    
-
     begin
 
         duty_cycle_scaled <= unsigned(duty_cycle);
@@ -83,11 +78,7 @@ architecture pwm_controller_arch of pwm_controller is
         --Integers value of clock cycles in the duty cycle
         duty_count <= duty_count_full_prec(DUTY_COUNT_BITS_FULL - 1 downto 25+17);
 
-        -- Extract the integer part of duty_count_full by shifting out fractional bits
-        --duty_count <= duty_count_full(N_BITS_CLK_CYCLES_FULL + 18 - 1 downto 17);
-
-
-
+        -- Simple counter to controll output logic
         pwm_generatr : process(clk)
         begin
             if rising_edge(clk) then
@@ -95,14 +86,12 @@ architecture pwm_controller_arch of pwm_controller is
                     counter <= (others => '0');
                     output <= '0';
                 else
-
                     if counter < period_clk then
                         counter <= counter + 1;
                     elsif counter >= period_clk then
                         counter <= (others => '0');
                     else 
                         counter <= (others => '0');
-                        
                     end if;
                     
                     if counter < duty_count then
@@ -114,4 +103,4 @@ architecture pwm_controller_arch of pwm_controller is
                 end if;
             end if;
         end process;
-end architecture ; -- pwm_controller
+end architecture ;

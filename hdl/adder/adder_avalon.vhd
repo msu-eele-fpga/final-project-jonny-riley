@@ -16,7 +16,7 @@ entity adder_avalon is
     avs_writedata   : in std_logic_vector(31 downto 0);
     -- external I/O; export to top-level
     push_button     : in std_ulogic;
-    led             : out std_ulogic_vector(7 downto 0)
+    led             : out std_ulogic_vector(6 downto 0)
     );
 end entity adder_avalon;
 
@@ -29,7 +29,7 @@ architecture adder_avalon_arch of adder_avalon is
             rst             : in std_ulogic; -- system reset (assume active high, change at top level if needed)
             push_button     : in std_ulogic; -- Pushbutton to change state (assume active high, change at top level if needed)
             amount          : in unsigned(7 downto 0); -- Amount the binary will add by on each button press
-            led             : out std_ulogic_vector(7 downto 0) -- LEDs on the DE10-Nano board
+            led             : out std_ulogic_vector(6 downto 0) -- LEDs on the DE10-Nano board
         );
     end component adder;
 
@@ -50,7 +50,7 @@ architecture adder_avalon_arch of adder_avalon is
         begin
             if rising_edge(clk) and avs_read = '1' then
                 case avs_address is
-                when "00" => avs_readdata <= "000000000000000000000000" & amount;
+                when "00" => avs_readdata <= "000000000000000000000000" & std_logic_vector(amount);
 
                 when others => avs_readdata <= (others =>'0'); -- return zeros for unused registers
 
@@ -65,7 +65,7 @@ architecture adder_avalon_arch of adder_avalon is
 
                 elsif rising_edge(clk) and avs_write = '1' then
                     case avs_address is
-                    when "00" => amount <= unsigned(avs_writedata(0));
+                    when "00" => amount <= unsigned(avs_writedata(7 downto 0));
 
                     when others => null;
                     end case;

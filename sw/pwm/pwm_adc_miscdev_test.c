@@ -1,10 +1,15 @@
+/****************************************
+** pwm_adc_miscdev_test.c, pwm and adc miscdev, EELE467 final
+** Riley Holmes, Jonny Hughes
+** 12/11/24
+*****************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-
 
 #define CH0 0x00
 #define CH1 0x04
@@ -16,7 +21,6 @@
 #define GREEN_DUTY_CYCLE_OFFSET 0x0C
 
 
-
 uint32_t convert (uint32_t adc_value){				//to convert adc_value to pwm duty cycle
 	uint32_t max_duty = 2 << 17;
 	uint32_t max_adc = 2 << 12;
@@ -26,7 +30,6 @@ uint32_t convert (uint32_t adc_value){				//to convert adc_value to pwm duty cyc
 
 	return(result);
 }
-
 
 int main () {
 	FILE *pwm_file;
@@ -48,10 +51,8 @@ int main () {
 		exit(1);
 	}
 
-
 	printf("\nControlling the led with the adc\n\n");
 	
-
 	while(1){
 		//Blue LED Control
 		adc_ret = fseek(adc_file, CH0, SEEK_SET);
@@ -76,7 +77,6 @@ int main () {
 		pwm_ret = fseek(pwm_file, GREEN_DUTY_CYCLE_OFFSET, SEEK_SET);
 		pwm_ret = fwrite(&scaled_val, 4, 1, pwm_file);
 		fflush(pwm_file);
-
 
 	}
 

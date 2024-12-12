@@ -1,3 +1,11 @@
+/****************************************
+** Timer.c, reaction time driver, EELE467 final
+** Riley Holmes, Jonny Hughes
+** 12/11/24
+*****************************************/
+
+
+
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/platform_device.h>
@@ -10,7 +18,6 @@
 
 #define START_OFFSET 0x00;
 #define TIME_OUT_OFFSET 0x04;
-
 
 /**
 * struct timer_dev - Private led patterns device struct.
@@ -29,19 +36,13 @@ struct timer_dev {
     struct mutex lock;
 };
 
-
-
-
 /**
 * start_show() - Return the start value to user-space via sysfs.
 * @dev: Device structure for the timer component. This
-*
-device struct is embedded in the timer' platform
-*
-device struct.
+* device struct is embedded in the timer' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t start_show(struct device *dev,
@@ -53,21 +54,17 @@ static ssize_t start_show(struct device *dev,
     start = ioread32(priv->start);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", start);
-
 }
 
 
 /**
 * start_store() - Store the start value.
 * @dev: Device structure for the timer component. This
-*
-device struct is embedded in the timer' platform
-*
-device struct.
+* device struct is embedded in the timer' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the start value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t start_store(struct device *dev,
@@ -88,20 +85,16 @@ static ssize_t start_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
 
 
 /**
 * time_out_show() - Return the time_out value to user-space via sysfs.
 * @dev: Device structure for the timer component. This
-*
-device struct is embedded in the timer' platform
-*
-device struct.
+* device struct is embedded in the timer' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t time_out_show(struct device *dev,
@@ -113,20 +106,16 @@ static ssize_t time_out_show(struct device *dev,
     time_out = ioread32(priv->time_out);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", time_out);
-
 }
 
 /**
 * time_out_store() - Store the time_out value.
 * @dev: Device structure for the timer component. This
-*
-device struct is embedded in the timer' platform
-*
-device struct.
+* device struct is embedded in the timer' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the time_out value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t time_out_store(struct device *dev,
@@ -146,13 +135,11 @@ static ssize_t time_out_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
 
 // Define sysfs attributes
 static DEVICE_ATTR_RW(start);
 static DEVICE_ATTR_RW(time_out);
-
 
 // Create an attribute group so the device core can
 // export the attributes for us.
@@ -261,7 +248,6 @@ static ssize_t timer_write(struct file *file, const char __user *buf,
 
         // Return the number of bytes we wrote.
         ret = sizeof(val);
-
     }
     else {
         pr_warn("timer_write: nothing copied from user space\n");
@@ -280,15 +266,12 @@ static ssize_t timer_write(struct file *file, const char __user *buf,
 *
 timer driver
 * @owner: The timer driver owns the file operations; this
-*
-ensures that the driver can't be removed while the
-*
-character device is still in use.
+* ensures that the driver can't be removed while the
+* character device is still in use.
 * @read: The read function.
 * @write: The write function.
 * @llseek: We use the kernel's default_llseek() function; this allows
-*
-users to change what position they are writing/reading to/from.
+* users to change what position they are writing/reading to/from.
 */
 static const struct file_operations timer_fops = {
     .owner = THIS_MODULE,
@@ -300,9 +283,7 @@ static const struct file_operations timer_fops = {
 static int timer_probe(struct platform_device *pdev)
 {
     struct timer_dev *priv;  
-
     size_t ret;
-
 
     /*
     * Allocate kernel memory for the led patterns device and set it to 0.
@@ -332,7 +313,6 @@ static int timer_probe(struct platform_device *pdev)
     priv->start = priv->base_addr + START_OFFSET;
     priv->time_out = priv->base_addr + TIME_OUT_OFFSET;
 
-
     // Initialize the misc device parameters
     priv->miscdev.minor = MISC_DYNAMIC_MINOR;
     priv->miscdev.name = "timer";
@@ -350,14 +330,9 @@ static int timer_probe(struct platform_device *pdev)
     * This is so we can access our state container in the other functions.
     */
     platform_set_drvdata(pdev, priv);
-
     pr_info("timer_probe successful\n");
-
     return 0;
-
 }
-
-
 
 
 static int timer_remove(struct platform_device *pdev)
@@ -367,9 +342,7 @@ static int timer_remove(struct platform_device *pdev)
 
     // Deregister the misc device and remove the /dev/timer file.
     misc_deregister(&priv->miscdev);
-
     pr_info("timer_remove successful\n");
-
     return 0;
 }
 
@@ -378,7 +351,6 @@ static const struct of_device_id timer_of_match[] = {
     { }
 };
 MODULE_DEVICE_TABLE(of, timer_of_match);
-
 
 
 /*

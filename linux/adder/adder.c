@@ -1,3 +1,10 @@
+/****************************************
+** adder.c, adder driver, EELE467 final
+** Riley Holmes, Jonny Hughes
+** 12/11/24
+*****************************************/
+
+
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/platform_device.h>
@@ -34,13 +41,10 @@ struct adder_dev {
 /**
 * period_show() - Return the period value to user-space via sysfs.
 * @dev: Device structure for the adder component. This
-*
-device struct is embedded in the adder' platform
-*
-device struct.
+* device struct is embedded in the adder' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t amount_show(struct device *dev,
@@ -52,21 +56,17 @@ static ssize_t amount_show(struct device *dev,
     amount = ioread32(priv->amount);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", amount);
-
 }
 
 
 /**
 * period_store() - Store the period value.
 * @dev: Device structure for the adder component. This
-*
-device struct is embedded in the adder' platform
-*
-device struct.
+* device struct is embedded in the adder' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the period value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t amount_store(struct device *dev,
@@ -87,13 +87,11 @@ static ssize_t amount_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
 
 
 // Define sysfs attributes
 static DEVICE_ATTR_RW(amount);
-
 
 // Create an attribute group so the device core can
 // export the attributes for us.

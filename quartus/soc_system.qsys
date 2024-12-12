@@ -25,6 +25,22 @@
          type = "int";
       }
    }
+   element adder_avalon_0
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element adder_avalon_0.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "8192";
+         type = "String";
+      }
+   }
    element fpga_clk
    {
       datum _sortIndex
@@ -355,6 +371,38 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element timer_avalon_0
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
+   element timer_avalon_0.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "4096";
+         type = "String";
+      }
+   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
@@ -377,6 +425,7 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="adc" internal="adc.external_interface" type="conduit" dir="end" />
+ <interface name="adder" internal="adder_avalon_0.adder" type="conduit" dir="end" />
  <interface name="clk" internal="fpga_clk.clk_in" type="clock" dir="end" />
  <interface name="hps_i2c0" internal="hps.i2c0" />
  <interface name="hps_i2c0_clk" internal="hps.i2c0_clk" />
@@ -391,6 +440,7 @@
    type="conduit"
    dir="end" />
  <interface name="reset" internal="fpga_clk.clk_in_reset" type="reset" dir="end" />
+ <interface name="timer" internal="timer_avalon_0.timer" type="conduit" dir="end" />
  <module name="adc" kind="altera_up_avalon_adc" version="18.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="12500000" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -602,6 +652,7 @@
   <parameter name="gui_switchover_mode">Automatic Switchover</parameter>
   <parameter name="gui_use_locked" value="false" />
  </module>
+ <module name="adder_avalon_0" kind="adder_avalon" version="1.0" enabled="1" />
  <module name="fpga_clk" kind="clock_source" version="23.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -1153,6 +1204,7 @@
   <parameter name="USE_PLI" value="0" />
  </module>
  <module name="pwm_avalon_0" kind="pwm_avalon" version="1.0" enabled="1" />
+ <module name="timer_avalon_0" kind="timer_avalon" version="1.0" enabled="1" />
  <connection
    kind="avalon"
    version="23.1"
@@ -1174,6 +1226,24 @@
  <connection
    kind="avalon"
    version="23.1"
+   start="hps.h2f_lw_axi_master"
+   end="timer_avalon_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x1000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="23.1"
+   start="hps.h2f_lw_axi_master"
+   end="adder_avalon_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="23.1"
    start="jtag_master.master"
    end="adc.adc_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1187,6 +1257,24 @@
    end="pwm_avalon_0.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00128c50" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="23.1"
+   start="jtag_master.master"
+   end="timer_avalon_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x1000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="23.1"
+   start="jtag_master.master"
+   end="adder_avalon_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1199,6 +1287,16 @@
    version="23.1"
    start="fpga_clk.clk"
    end="pwm_avalon_0.clk" />
+ <connection
+   kind="clock"
+   version="23.1"
+   start="fpga_clk.clk"
+   end="timer_avalon_0.clk" />
+ <connection
+   kind="clock"
+   version="23.1"
+   start="fpga_clk.clk"
+   end="adder_avalon_0.clock" />
  <connection
    kind="clock"
    version="23.1"
@@ -1225,7 +1323,17 @@
    kind="reset"
    version="23.1"
    start="fpga_clk.clk_reset"
+   end="adder_avalon_0.reset" />
+ <connection
+   kind="reset"
+   version="23.1"
+   start="fpga_clk.clk_reset"
    end="pwm_avalon_0.rst" />
+ <connection
+   kind="reset"
+   version="23.1"
+   start="fpga_clk.clk_reset"
+   end="timer_avalon_0.rst" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

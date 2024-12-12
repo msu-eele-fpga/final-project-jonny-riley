@@ -10,7 +10,7 @@ entity adder is
         rst             : in std_ulogic; -- system reset (assume active high, change at top level if needed)
         push_button     : in std_ulogic; -- Pushbutton to change state (assume active high, change at top level if needed)
         amount          : in unsigned(7 downto 0); -- Amount the binary will add by on each button press
-        led             : out std_ulogic_vector(7 downto 0) -- LEDs on the DE10-Nano board
+        led             : out std_ulogic_vector(6 downto 0) -- LEDs on the DE10-Nano board
     );
 end entity adder;
 
@@ -26,7 +26,7 @@ architecture adder_arch of adder is
 
     signal sync_button  : std_ulogic;
 
-    signal count : unsigned(7 downto 0) := "00000000";
+    signal count : unsigned(6 downto 0) := "0000000";
 
     begin
 
@@ -40,10 +40,10 @@ architecture adder_arch of adder is
         state_logic : process(clk, rst, sync_button)
             begin
                 if rst = '1' then
-                    count <= "00000000";
+                    count <= "0000000";
                 elsif rising_edge(clk) then
                     if sync_button = '1' then
-                        count <= count + amount;
+                        count <= count + amount(6 downto 0);
                     end if;
 
                 end if;
@@ -54,7 +54,7 @@ architecture adder_arch of adder is
 
             begin
                 if rst = '1' then
-                    led <= "00000000";
+                    led <= "0000000";
                 elsif rising_edge(clk) then
                     led <= std_ulogic_vector(count);
                 end if;

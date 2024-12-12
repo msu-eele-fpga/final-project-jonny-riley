@@ -1,6 +1,12 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2024 Ross K. Snider, Trevor Vannoy.  All rights reserved.
 
+-----------------------------
+-- de10nano_top.vhd, EELE467 final
+-- Riley Holmes, Jonny Hughes
+-- 12/11/24
+-----------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -254,11 +260,17 @@ architecture de10nano_arch of de10nano_top is
       adc_sclk                        : out   std_logic;
       adc_cs_n                        : out   std_logic;
       adc_dout                        : in    std_logic;
-      adc_din                         : out   std_logic
+      adc_din                         : out   std_logic;
+      timer_push_button               : in    std_logic                     := 'X';             -- push_button
+      timer_led                       : out   std_logic;                                        -- led
+      adder_led                       : out   std_logic_vector(6 downto 0);                      -- led
+      adder_push_button               : in    std_logic                     := 'X'             -- push_button
     );
   end component soc_system;
 
   signal rst_n : std_ulogic;
+
+  signal temp_led : std_logic_vector(6 downto 0);
 
 begin
 
@@ -359,7 +371,14 @@ begin
 
       -- Fabric clock and reset
       clk_clk       => fpga_clk1_50,
-      reset_reset_n => rst_n
+      reset_reset_n => rst_n,
+
+      timer_push_button               => push_button_n(1),               --          timer.push_button
+      timer_led                       => led(7),                       --               .led
+      adder_led                       => temp_led,                        --          adder.led
+      adder_push_button               => push_button_n(1)   
     );
+
+    led(6 downto 0) <= std_ulogic_vector(temp_led);
 
 end architecture de10nano_arch;

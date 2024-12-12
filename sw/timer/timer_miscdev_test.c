@@ -1,3 +1,9 @@
+/****************************************
+** timer_miscdev_test.c, timer miscdev, EELE467 final
+** Riley Holmes, Jonny Hughes
+** 12/11/24
+*****************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -7,12 +13,6 @@
 
 #define START_OFFSET 0x00
 #define TIME_OUT_OFFSET 0x04
-
-
-
-
-
-
 
 int main () {
 	FILE *timer_file;
@@ -25,9 +25,6 @@ int main () {
 		printf("failed to open timer file\n");
 		exit(1);
 	}
-
-
-
 
 	printf("\n Starting reaction timer.\n\n");
 	printf("Press the button when the light goes off\n");
@@ -51,15 +48,6 @@ int main () {
 	timer_ret = fread(&val, 4, 1, timer_file);
 
 	printf("Reaction time in clock cycles: 0x%x\n\n", val);
-
-	
-
-
-
-
-		
-
-
 	
 	fclose(timer_file);
 	return 0;

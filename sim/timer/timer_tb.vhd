@@ -1,3 +1,9 @@
+-----------------------------
+-- Timer_tb.vhd, timer testbench to sim, EELE467 final
+-- Riley Holmes, Jonny Hughes
+-- 12/11/24
+-----------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;

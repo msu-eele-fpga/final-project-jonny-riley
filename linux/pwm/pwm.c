@@ -1,3 +1,9 @@
+/****************************************
+** pwm.c, pwm driver, EELE467 final
+** Riley Holmes, Jonny Hughes
+** 12/11/24
+*****************************************/
+
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/platform_device.h>
@@ -34,19 +40,13 @@ struct pwm_dev {
     struct mutex lock;
 };
 
-
-
-
 /**
 * period_show() - Return the period value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t period_show(struct device *dev,
@@ -58,21 +58,17 @@ static ssize_t period_show(struct device *dev,
     period = ioread32(priv->period);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", period);
-
 }
 
 
 /**
 * period_store() - Store the period value.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the period value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t period_store(struct device *dev,
@@ -93,20 +89,16 @@ static ssize_t period_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
 
 
 /**
 * blue_duty_cycle_show() - Return the blue_duty_cycle value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t blue_duty_cycle_show(struct device *dev,
@@ -118,20 +110,16 @@ static ssize_t blue_duty_cycle_show(struct device *dev,
     blue_duty_cycle = ioread32(priv->blue_duty_cycle);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", blue_duty_cycle);
-
 }
 
 /**
 * blue_duty_cycle_store() - Store the blue_duty_cycle value.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the blue_duty_cycle value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t blue_duty_cycle_store(struct device *dev,
@@ -151,22 +139,15 @@ static ssize_t blue_duty_cycle_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
-
-
-
 
 /**
 * red_duty_cycle_show() - Return the red_duty_cycle value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t red_duty_cycle_show(struct device *dev,
@@ -178,20 +159,16 @@ static ssize_t red_duty_cycle_show(struct device *dev,
     red_duty_cycle = ioread32(priv->red_duty_cycle);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", red_duty_cycle);
-
 }
 
 /**
 * red_duty_cycle_store() - Store the red_duty_cycle value.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the red_duty_cycle value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t red_duty_cycle_store(struct device *dev,
@@ -211,19 +188,15 @@ static ssize_t red_duty_cycle_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
 
 /**
 * green_duty_cycle_show() - Return the green_duty_cycle value to user-space via sysfs.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that gets returned to user-space.
-*
 * Return: The number of bytes read.
 */
 static ssize_t green_duty_cycle_show(struct device *dev,
@@ -235,20 +208,16 @@ static ssize_t green_duty_cycle_show(struct device *dev,
     green_duty_cycle = ioread32(priv->green_duty_cycle);
 
     return scnprintf(buf, PAGE_SIZE, "%u\n", green_duty_cycle);
-
 }
 
 /**
 * green_duty_cycle_store() - Store the green_duty_cycle value.
 * @dev: Device structure for the pwm component. This
-*
-device struct is embedded in the pwm' platform
-*
-device struct.
+* device struct is embedded in the pwm' platform
+* device struct.
 * @attr: Unused.
 * @buf: Buffer that contains the green_duty_cycle value being written.
 * @size: The number of bytes being written.
-*
 * Return: The number of bytes stored.
 */
 static ssize_t green_duty_cycle_store(struct device *dev,
@@ -268,7 +237,6 @@ static ssize_t green_duty_cycle_store(struct device *dev,
 
     // Write was successful, so we return the number of bytes we wrote.
     return size;
-
 }
 
 
@@ -296,7 +264,6 @@ ATTRIBUTE_GROUPS(pwm);
 * @buf: User-space buffer to read the value into.
 * @count: The number of bytes being requested.
 * @offset: The byte offset in the file being read from.
-*
 * Return: On success, the number of bytes written is returned and the
 * offset @offset is advanced by this number. On error, a negative error
 * value is returned.
@@ -399,8 +366,6 @@ static ssize_t pwm_write(struct file *file, const char __user *buf,
 }
 
 
-
-
 /**
 * pwm_fops - File operations supported by the
 *
@@ -481,7 +446,6 @@ static int pwm_probe(struct platform_device *pdev)
     pr_info("pwm_probe successful\n");
 
     return 0;
-
 }
 
 
